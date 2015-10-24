@@ -35,13 +35,11 @@ class Starter(object):
         """
         yield 667
 
-@tube
-class EvenOdd(object):
+class EvenOdd(Router):
     outputType = Routed(int)
-    def __init__(self):
-        self._router = Router(int)
-        self.evenRoute = self._router.newRoute()
-        self.oddRoute = self._router.newRoute()
+    def addRoutes(self):
+        self.evenRoute = self.newRoute()
+        self.oddRoute = self.newRoute()
 
     def received(self, item):
         if (item % 2) == 0:
@@ -61,6 +59,8 @@ class TestBasicRouter(TestCase):
         
     def test_basic_router(self):
         evenOddTube = EvenOdd()
-        oddRoute.flowTo(self.fd)
-        self.ff.flowTo(series(Starter(), evenOddTube)) # XXX series needed?
+        startTube = self.ff.flowTo(series(Starter()))
+        startTube.flowTo(evenOddTube.drain)
+        evenOddTube.addRoutes()
+        evenOddTube.oddRoute.flowTo(self.fd)
         self.assertEquals(self.fd.received, [667])
