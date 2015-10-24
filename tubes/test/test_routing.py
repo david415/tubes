@@ -65,16 +65,6 @@ class TestBasicRouter1(TestCase):
         evenOddTube.oddRoute.flowTo(self.fd)
         self.assertEquals(self.fd.received, [667])
 
-
-class TestBasicRouter2(TestCase):
-    """
-    Tests for L{Router}.
-    """
-
-    def setUp(self):
-        self.ff = FakeFount()
-        self.fd = FakeDrain()
-
     def test_basic_router2(self):
         aRouter = Router(int)
         evenFount = aRouter.newRoute()
@@ -90,5 +80,23 @@ class TestBasicRouter2(TestCase):
                     yield to(oddFount, item)
 
         startTube = self.ff.flowTo(series(Starter(), aRouter))
+        oddFount.flowTo(self.fd)
+        self.assertEquals(self.fd.received, [667])
+
+    def test_basic_router3(self):
+        aRouter = Router(int)
+        startTube = self.ff.flowTo(series(Starter(), aRouter.drain))
+        evenFount = aRouter.newRoute()
+        oddFount = aRouter.newRoute()
+
+        @tube
+        class EvenOdd(object):
+            outputType = Routed(int)
+            def received(self, item):
+                if (item % 2) == 0:
+                    yield to(evenFount, item)
+                else:
+                    yield to(oddFount, item)
+
         oddFount.flowTo(self.fd)
         self.assertEquals(self.fd.received, [667])
