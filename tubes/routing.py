@@ -1,4 +1,4 @@
-# -*- test-case-name: tubes.test.test_fan -*-
+# -*- test-case-name: tubes.test.test_routing -*-
 # Copyright (c) Twisted Matrix Laboratories.
 # See LICENSE for details.
 
