@@ -21,7 +21,6 @@ class NotABigTruckError(Exception):
     A series of tubes is not just a big truck you
     can dump stuff onto...
     """
-    pass
 
 
 
